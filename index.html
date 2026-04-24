@@ -86,7 +86,45 @@
 <section class="contact" id="contacto">
   <div class="container">
     <h2 class="section-title">¿Hablamos?</h2>
-    <p class="section-subtitle">Escribinos y coordinamos una demo de HolaRSVP para tu próximo evento.</p>
+    <p class="section-subtitle">Dejanos tus datos y te contactamos para coordinar una demo de HolaRSVP para tu próximo evento.</p>
+
+    <form id="contact-form" class="contact-form" novalidate>
+      <input type="hidden" name="access_key" value="e4f3761b-7d6a-4507-808b-f6d0a7793be9">
+      <input type="hidden" name="subject" value="Nuevo contacto desde HolaRSVP">
+      <input type="hidden" name="from_name" value="HolaRSVP Web">
+      <input type="checkbox" name="botcheck" class="honeypot" tabindex="-1" autocomplete="off" aria-hidden="true">
+
+      <div class="form-row">
+        <div class="form-field">
+          <label for="nombre">Nombre</label>
+          <input type="text" id="nombre" name="nombre" required autocomplete="given-name">
+        </div>
+        <div class="form-field">
+          <label for="apellido">Apellido</label>
+          <input type="text" id="apellido" name="apellido" required autocomplete="family-name">
+        </div>
+      </div>
+
+      <div class="form-field">
+        <label for="email">Email</label>
+        <input type="email" id="email" name="email" required autocomplete="email">
+      </div>
+
+      <div class="form-field">
+        <label for="celular">Celular</label>
+        <input type="tel" id="celular" name="celular" required autocomplete="tel" placeholder="+54 9 11 1234-5678">
+      </div>
+
+      <div class="form-field">
+        <label for="mensaje">Mensaje</label>
+        <textarea id="mensaje" name="mensaje" rows="5" required placeholder="Contanos sobre tu evento: fecha aproximada, cantidad de invitados, lo que tengas pensado."></textarea>
+      </div>
+
+      <button type="submit" class="cta">Enviar</button>
+      <p class="form-status" role="status" aria-live="polite"></p>
+    </form>
+
+    <p class="contact-alt">O escribinos directo a:</p>
     <div class="contact-methods">
       <a href="mailto:hola@holarsvp.ar" class="contact-email">hola@holarsvp.ar</a>
       <a href="https://wa.me/5491150415041" class="contact-phone">+54 9 11 5041-5041</a>
@@ -107,6 +145,42 @@
     </div>
   </div>
 </footer>
+
+<script>
+  document.getElementById('contact-form').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const form = e.target;
+    const status = form.querySelector('.form-status');
+    const button = form.querySelector('button[type="submit"]');
+
+    status.textContent = '';
+    status.className = 'form-status';
+    button.disabled = true;
+    button.textContent = 'Enviando…';
+
+    try {
+      const res = await fetch('https://api.web3forms.com/submit', {
+        method: 'POST',
+        body: new FormData(form),
+      });
+      const data = await res.json();
+      if (data.success) {
+        status.textContent = '¡Gracias! Recibimos tu mensaje y te contactamos pronto.';
+        status.classList.add('success');
+        form.reset();
+      } else {
+        status.textContent = data.message || 'Hubo un problema. Probá de nuevo en un momento.';
+        status.classList.add('error');
+      }
+    } catch (err) {
+      status.textContent = 'No pudimos enviar el mensaje. Escribinos a hola@holarsvp.ar.';
+      status.classList.add('error');
+    } finally {
+      button.disabled = false;
+      button.textContent = 'Enviar';
+    }
+  });
+</script>
 
 </body>
 </html>
