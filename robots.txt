@@ -1,0 +1,18 @@
+# HolaRSVP — landing page
+# All crawlers are welcome.
+
+User-agent: *
+Allow: /
+
+# Meta / Facebook / WhatsApp link preview & verification crawlers
+User-agent: facebookexternalhit
+Allow: /
+
+User-agent: Facebot
+Allow: /
+
+User-agent: meta-externalagent
+Allow: /
+
+User-agent: meta-externalfetcher
+Allow: /
